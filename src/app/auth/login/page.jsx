@@ -43,7 +43,7 @@ function LoginForm() {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: provider,
                 options: {
-                    redirectTo: `${window.location.origin}/auth/callback`
+                    redirectTo: `${window.location.protocol}//${window.location.host}/auth/callback`
                 }
             })
             if (error) throw error
