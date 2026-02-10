@@ -4,9 +4,17 @@ import { cookies } from 'next/headers'
 export async function createSupabaseServer() {
     const cookieStore = await cookies()
 
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!url || !key) {
+        console.warn('Supabase credentials missing. Server client will not be initialized.')
+        return null
+    }
+
     return createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        url,
+        key,
         {
             cookies: {
                 get(name) {
