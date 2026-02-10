@@ -53,7 +53,7 @@ function LoginForm() {
     }
 
     return (
-        <div className="min-h-screen flex bg-white font-sans overflow-hidden">
+        <div className="min-h-screen flex bg-white font-sans">
             {/* Left Side: Visual/Branding (Out of the box) */}
             <div className="hidden lg:flex lg:w-1/2 bg-[#0b87bd] relative items-center justify-center p-20 overflow-hidden">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white/10 rounded-full blur-3xl"></div>
@@ -84,7 +84,7 @@ function LoginForm() {
             </div>
 
             {/* Right Side: Form Content */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12 relative">
+            <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-16 lg:px-24 py-12 relative overflow-y-auto">
                 {/* Mobile Tablet Logo */}
                 <div className="lg:hidden mb-12 flex justify-center">
                     <Link href="/">

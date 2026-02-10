@@ -26,7 +26,7 @@ export default async function Home() {
           alt="Campus Connect Hero"
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b87bd] via-[#0b87bd]/60 to-transparent flex flex-col justify-center p-12 md:p-32">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0b87bd] via-[#0b87bd]/60 to-transparent flex flex-col justify-center p-6 md:p-32">
           <div className="max-w-7xl mx-auto w-full">
             <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 text-[11px] font-black uppercase tracking-[0.2em] text-white bg-white/10 border border-white/20 rounded-full w-fit backdrop-blur-md">
               <span className="relative flex h-2 w-2">
@@ -36,7 +36,7 @@ export default async function Home() {
               Campus Ecosystem Active
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter leading-[0.95] drop-shadow-xl">
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter leading-[0.95] drop-shadow-xl">
               Stay Connected. <br />
               Broadcast Your Voice.
             </h1>
@@ -121,18 +121,18 @@ export default async function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-32 bg-[#1E1E2D] relative overflow-hidden">
+      <section className="py-20 md:py-32 bg-[#1E1E2D] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-full h-full bg-[#0b87bd]/5 opacity-50 z-0"></div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 py-12 rounded-[3.5rem] bg-white/[0.03] backdrop-blur-xl border border-white/5">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 px-4 py-8 md:py-12 rounded-[2rem] md:rounded-[3.5rem] bg-white/[0.03] backdrop-blur-xl border border-white/5">
             {[
               { val: '30+', label: 'Verified Clubs' },
               { val: '1.2k', label: 'Active Students' },
               { val: '150+', label: 'Monthly Events' },
               { val: '100%', label: 'Trust Score' }
             ].map((stat, i) => (
-              <div key={i} className="text-center p-6">
-                <div className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter">{stat.val}</div>
+              <div key={i} className="text-center p-4">
+                <div className="text-3xl md:text-5xl font-black text-white mb-2 tracking-tighter">{stat.val}</div>
                 <div className="text-[10px] uppercase font-black tracking-[0.2em] text-[#0b87bd] opacity-80">{stat.label}</div>
               </div>
             ))}
