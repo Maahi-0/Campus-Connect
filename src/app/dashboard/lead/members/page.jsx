@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '@/components/dashboard/Header'
 
-export default function Members() {
+function MembersForm() {
     const searchParams = useSearchParams()
     const clubIdParam = searchParams.get('club')
 
@@ -248,5 +248,18 @@ export default function Members() {
                 )}
             </div>
         </div>
+    )
+}
+
+export default function Members() {
+    return (
+        <Suspense fallback={
+            <div className="flex flex-col items-center py-20">
+                <div className="w-10 h-10 border-4 border-[#0b87bd]/20 border-t-[#0b87bd] rounded-full animate-spin mb-4"></div>
+                <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Loading Roster...</p>
+            </div>
+        }>
+            <MembersForm />
+        </Suspense>
     )
 }
