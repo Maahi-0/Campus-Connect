@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import { useState } from 'react'
+import Logo from '@/components/Logo'
 
 export default function Sidebar({ user, profile }) {
     const pathname = usePathname()
@@ -81,7 +82,6 @@ export default function Sidebar({ user, profile }) {
             { name: 'Members', path: '/dashboard/admin/members', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
             { name: 'About', path: '/dashboard/admin/about', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
             { name: 'Contact', path: '/dashboard/admin/contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
-            { name: 'Settings', path: '/dashboard/admin/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
         ],
     }
 
@@ -91,11 +91,8 @@ export default function Sidebar({ user, profile }) {
     return (
         <aside className="w-72 bg-[#0b87bd] h-screen fixed left-0 top-0 text-white flex flex-col p-8 transition-all duration-300 z-50">
             {/* Logo */}
-            <div className="flex items-center gap-3 mb-12">
-                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-black/5">
-                    <div className="w-5 h-5 bg-[#0b87bd] rounded-sm transform rotate-45"></div>
-                </div>
-                <span className="text-xl font-black tracking-tighter text-white">Campus Connect</span>
+            <div className="mb-10 px-2">
+                <Logo showText={true} />
             </div>
 
             {/* Profile Section */}

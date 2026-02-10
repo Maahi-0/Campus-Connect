@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -59,8 +60,8 @@ export default function Login() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-white/10 rounded-full blur-3xl"></div>
 
                 <div className="relative z-10 text-white max-w-lg">
-                    <Link href="/" className="inline-block text-2xl font-bold bg-white text-[#0b87bd] px-6 py-2 rounded-2xl mb-12 shadow-xl shadow-[#096a96]/20">
-                        Campus Connect
+                    <Link href="/" className="inline-block mb-12 transform hover:scale-105 transition-all">
+                        <Logo className="text-white w-auto h-12" showText={false} />
                     </Link>
                     <h2 className="text-6xl font-extrabold mb-8 tracking-tighter leading-[1.1]">
                         Welcome Back to your Campus Hub.
@@ -86,7 +87,9 @@ export default function Login() {
             <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12 relative">
                 {/* Mobile Tablet Logo */}
                 <div className="lg:hidden mb-12 flex justify-center">
-                    <Link href="/" className="text-3xl font-bold text-[#0b87bd]">Campus Connect</Link>
+                    <Link href="/">
+                        <Logo className="text-[#0b87bd] w-auto h-12" showText={false} />
+                    </Link>
                 </div>
 
                 <div className="max-w-md w-full mx-auto">

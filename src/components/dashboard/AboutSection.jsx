@@ -1,4 +1,5 @@
 import Header from "@/components/dashboard/Header"
+import Logo from "@/components/Logo"
 
 export default function AboutSection({ user }) {
     return (
@@ -91,8 +92,11 @@ export default function AboutSection({ user }) {
                         <p className="text-white/70 text-lg mb-8">
                             Whether you're looking to lead, participate, or just explore – there's a place for you here.
                         </p>
-                        <div className="inline-flex items-center gap-2 px-6 py-3 bg-[#0b87bd] rounded-xl font-bold text-white hover:bg-[#096a96] transition-colors cursor-default">
-                            Campus Connect v1.0
+                        <div className="inline-flex flex-col items-center gap-4">
+                            <Logo className="text-white opacity-50 hover:opacity-100 transition-opacity w-auto h-10" showText={false} />
+                            <div className="px-6 py-2 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-white/50 border border-white/10">
+                                Campus Connect v1.0
+                            </div>
                         </div>
                     </div>
                 </div>
