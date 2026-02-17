@@ -111,7 +111,7 @@ export default async function ClubReview({ params }) {
 
                                 revalidatePath('/dashboard/admin')
                                 revalidatePath('/dashboard/admin/verify-clubs')
-                                revalidatePath('/dashboard/clubs/all')
+                                revalidatePath('/dashboard/clubs')
                                 redirect('/dashboard/admin/verify-clubs')
                             }} className="flex-grow">
                                 <button className="w-full py-4 bg-[#0b87bd] hover:bg-[#096a96] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-[#0b87bd]/20">
@@ -128,7 +128,7 @@ export default async function ClubReview({ params }) {
                                 }
                                 revalidatePath('/dashboard/admin')
                                 revalidatePath('/dashboard/admin/verify-clubs')
-                                revalidatePath('/dashboard/clubs/all')
+                                revalidatePath('/dashboard/clubs')
                                 redirect('/dashboard/admin/verify-clubs')
                             }}>
                                 <button className="px-10 py-4 bg-red-50 text-red-500 hover:bg-red-100 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all">

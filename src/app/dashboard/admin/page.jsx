@@ -143,7 +143,7 @@ export default async function AdminDashboard() {
                                     </Link>
                                 ))}
                             </div>
-                            <Link href="/dashboard/admin/members" className="w-full mt-10 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-200 block text-center transition-all font-mono">
+                            <Link href="/dashboard/members" className="w-full mt-10 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-200 block text-center transition-all font-mono">
                                 MANAGE SYSTEM USERS
                             </Link>
                         </div>

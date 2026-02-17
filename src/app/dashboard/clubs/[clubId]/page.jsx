@@ -141,7 +141,7 @@ export default function ClubDetail() {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <h2 className="text-2xl font-black text-gray-900 mb-2">Club Not Found</h2>
-                <Link href="/dashboard/clubs/all" className="text-[#0b87bd] font-bold hover:underline">
+                <Link href="/dashboard/clubs" className="text-[#0b87bd] font-bold hover:underline">
                     ← Back to All Clubs
                 </Link>
             </div>
@@ -197,7 +197,7 @@ export default function ClubDetail() {
 
                 {/* Back Button */}
                 <Link
-                    href="/dashboard/clubs/all"
+                    href="/dashboard/clubs"
                     className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-sm text-gray-900 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg flex items-center gap-2"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -40,3 +40,36 @@ export async function createSupabaseServer() {
 }
 
 
+
+import { redirect } from 'next/navigation'
+
+export async function getUserProfile() {
+    const supabase = await createSupabaseServer()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return { user: null, profile: null }
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+
+    return { user, profile }
+}
+
+export async function requireRole(allowedRoles) {
+    const { user, profile } = await getUserProfile()
+
+    if (!user) {
+        redirect('/auth/login')
+    }
+
+    const role = profile?.role || user.user_metadata?.role || 'student'
+
+    if (!allowedRoles.includes(role)) {
+        redirect('/dashboard')
+    }
+
+    return { user, profile, role }
+}

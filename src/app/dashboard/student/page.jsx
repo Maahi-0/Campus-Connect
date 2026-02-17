@@ -144,7 +144,7 @@ export default async function StudentDashboard() {
                                 )}
                             </div>
 
-                            <Link href="/dashboard/student/clubs" className="block w-full text-center mt-10 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-all font-mono">
+                            <Link href="/dashboard/clubs" className="block w-full text-center mt-10 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-all font-mono">
                                 EXPLORE ALL NODES
                             </Link>
                         </div>
@@ -154,7 +154,7 @@ export default async function StudentDashboard() {
                             <div className="relative z-10">
                                 <h4 className="text-lg font-black mb-2 tracking-tighter">Elevate Auth Privileges</h4>
                                 <p className="text-zinc-500 text-xs font-medium leading-relaxed mb-6 italic">Apply for Club Lead status to initiate your own transmissions and manage campus nodes.</p>
-                                <Link href="/dashboard/student/about" className="inline-block px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                                <Link href="/dashboard/about" className="inline-block px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
                                     Initiate Request
                                 </Link>
                             </div>

@@ -1,21 +1,15 @@
-import { createSupabaseServer } from '@/lib/supabase/server'
+import { getUserProfile, createSupabaseServer } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import DashboardClientLayout from '@/components/dashboard/DashboardClientLayout'
 
 export default async function DashboardLayout({ children }) {
-    const supabase = await createSupabaseServer()
-    const { data: { user } } = await supabase.auth.getUser()
+    let { user, profile } = await getUserProfile()
 
     if (!user) {
         redirect('/auth/login')
     }
 
-    // Attempt to fetch profile from the public.profiles table
-    let { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+    const supabase = await createSupabaseServer()
 
     // SELF-HEALING: If profile is missing in the profiles table, 
     // reconstruct it from user_metadata (which exists if they registered via our form)
@@ -47,12 +41,14 @@ export default async function DashboardLayout({ children }) {
                         Node identified but profile data packet is missing. This can occur if the synchronization handshake was interrupted during initialization.
                     </p>
                     <div className="space-y-4">
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="w-full bg-white text-black font-black py-4 rounded-2xl hover:bg-zinc-200 transition-all text-xs uppercase tracking-widest"
-                        >
-                            Reconnect Node
-                        </button>
+                        <form action="/auth/login" method="get">
+                            <button
+                                type="submit"
+                                className="w-full bg-white text-black font-black py-4 rounded-2xl hover:bg-zinc-200 transition-all text-xs uppercase tracking-widest"
+                            >
+                                Reconnect Node
+                            </button>
+                        </form>
                         <form action="/api/auth/sign-out" method="post">
                             <button
                                 type="submit"
@@ -68,7 +64,7 @@ export default async function DashboardLayout({ children }) {
     }
 
     return (
-        <DashboardClientLayout user={user} profile={profile}>
+        <DashboardClientLayout user={user} profile={profile} >
             {children}
         </DashboardClientLayout>
     )
