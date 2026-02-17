@@ -17,16 +17,23 @@ export default async function DashboardPage() {
         .single()
 
     // Fallback to metadata if DB record hasn't synced yet
-    const userRole = profile?.role || user.user_metadata?.role || 'student'
+    const rawRole = profile?.role || user.user_metadata?.role || 'student'
+    const userRole = rawRole.toLowerCase().trim()
+
+    console.log(`[DASHBOARD_REDIRECT] User: ${user.email}, Role: ${rawRole}, Normalized: ${userRole}`)
 
     // Redirect based on role
     switch (userRole) {
         case 'admin':
-            redirect('/dashboard/admin')
+            console.log(`[DASHBOARD_REDIRECT] Redirecting to /dashboard/admin`)
+            return redirect('/dashboard/admin')
         case 'club_lead':
-            redirect('/dashboard/lead')
+        case 'lead':
+            console.log(`[DASHBOARD_REDIRECT] Redirecting to /dashboard/lead`)
+            return redirect('/dashboard/lead')
         case 'student':
         default:
-            redirect('/dashboard/student')
+            console.log(`[DASHBOARD_REDIRECT] Redirecting to /dashboard/student`)
+            return redirect('/dashboard/student')
     }
 }

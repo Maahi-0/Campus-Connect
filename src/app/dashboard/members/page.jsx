@@ -18,9 +18,10 @@ export default async function MembersPage() {
         .eq('id', user.id)
         .single()
 
-    const userRole = currentUserProfile?.role || 'student'
+    const rawRole = currentUserProfile?.role || 'student'
+    const userRole = rawRole.toLowerCase().trim()
     const isAdmin = userRole === 'admin'
-    const isLead = userRole === 'club_lead'
+    const isLead = userRole === 'club_lead' || userRole === 'lead'
 
     // Fetch all members with their club memberships
     const { data: members, error: profilesError } = await supabase

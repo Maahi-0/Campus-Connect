@@ -10,6 +10,8 @@
   --color-surface: #121212;
   --color-surface-hover: #1a1a1a;
   --color-border: #262626;
+  --font-sans: var(--font-outfit), Inter, system-ui, sans-serif;
+  --font-display: var(--font-space), system-ui, sans-serif;
 }
 
 :root {
@@ -25,7 +27,17 @@ body {
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-space), sans-serif;
 }
 
 /* Dashboard Specific Styles */

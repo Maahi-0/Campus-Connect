@@ -65,9 +65,21 @@ export async function requireRole(allowedRoles) {
         redirect('/auth/login')
     }
 
-    const role = profile?.role || user.user_metadata?.role || 'student'
+    const rawRole = profile?.role || user.user_metadata?.role || 'student'
+    const role = rawRole.toLowerCase().trim()
 
-    if (!allowedRoles.includes(role)) {
+    // Normalize roles for comparison
+    const normalizedAllowedRoles = allowedRoles.map(r => r.toLowerCase().trim())
+
+    // Treat 'lead' and 'club_lead' as equivalent for authorization checks
+    const hasAccess = normalizedAllowedRoles.some(allowed => {
+        if (allowed === 'club_lead' || allowed === 'lead') {
+            return role === 'club_lead' || role === 'lead'
+        }
+        return role === allowed
+    })
+
+    if (!hasAccess) {
         redirect('/dashboard')
     }
 

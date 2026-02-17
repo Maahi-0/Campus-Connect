@@ -1,9 +1,16 @@
-import { JetBrains_Mono } from 'next/font/google'
+import { Outfit, Space_Grotesk } from 'next/font/google'
 import "./globals.css";
 
-const jetbrains = JetBrains_Mono({
+const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-outfit',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space',
 })
 
 export const metadata = {
@@ -13,8 +20,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${jetbrains.className} antialiased min-h-screen flex flex-col`}>
+    <html lang="en" className={`${outfit.variable} ${spaceGrotesk.variable}`}>
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-black text-white">
         <main className="flex-grow">
           {children}
         </main>

@@ -21,19 +21,27 @@ export default async function LeadDashboard() {
         .eq('user_id', user.id)
         .eq('role', 'lead')
 
-    const clubs = myClubs?.map(mc => mc.clubs) || []
+    const clubs = myClubs?.map(mc => mc.clubs).filter(Boolean) || []
 
     // Total members across all my clubs
-    const { count: totalMembers } = await supabase
-        .from('club_members')
-        .select('*', { count: 'exact', head: true })
-        .in('club_id', clubs.map(c => c.id))
+    let totalMembers = 0
+    if (clubs.length > 0) {
+        const { count } = await supabase
+            .from('club_members')
+            .select('*', { count: 'exact', head: true })
+            .in('club_id', clubs.map(c => c.id))
+        totalMembers = count || 0
+    }
 
     // Total events created for my clubs
-    const { count: totalEvents } = await supabase
-        .from('events')
-        .select('*', { count: 'exact', head: true })
-        .in('club_id', clubs.map(c => c.id))
+    let totalEvents = 0
+    if (clubs.length > 0) {
+        const { count } = await supabase
+            .from('events')
+            .select('*', { count: 'exact', head: true })
+            .in('club_id', clubs.map(c => c.id))
+        totalEvents = count || 0
+    }
 
     const stats = [
         { name: 'Club Members', value: totalMembers || 0, change: 'total', color: 'from-[#3B82F6] to-[#2563EB]', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },

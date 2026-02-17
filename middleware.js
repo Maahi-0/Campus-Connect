@@ -49,16 +49,12 @@ export async function middleware(req) {
 
     // 1. If trying to access dashboard but NOT logged in -> Login
     if (isDashboard && !user) {
-        const url = req.nextUrl.clone()
-        url.pathname = '/auth/login'
-        return NextResponse.redirect(url)
+        return NextResponse.redirect(new URL('/auth/login', req.url))
     }
 
     // 2. If already logged in and trying to access auth pages -> Dashboard
     if (isAuth && user && !req.nextUrl.searchParams.has('message')) {
-        const url = req.nextUrl.clone()
-        url.pathname = '/dashboard'
-        return NextResponse.redirect(url)
+        return NextResponse.redirect(new URL('/dashboard', req.url))
     }
 
     return res
