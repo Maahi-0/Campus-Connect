@@ -33,28 +33,30 @@ export default async function StudentDashboard() {
     ]
 
     return (
-        <div className="pb-12 text-white">
+        <div className="pb-12 text-slate-900">
             <Header
                 title="Student Hub"
-                subtitle="MONITORING CAMPUS FREQUENCIES"
+                subtitle="MONITORING CAMPUS SYNC"
                 user={user}
             />
 
             <div className="space-y-12">
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                     {stats.map((stat) => (
-                        <div key={stat.name} className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl relative overflow-hidden group">
+                        <div key={stat.name} className="bg-white border border-slate-100 p-8 rounded-[2.5rem] relative overflow-hidden group shadow-xl shadow-slate-200/50 hover:shadow-orange-500/10 transition-all duration-500">
                             <div className="relative z-10">
-                                <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">{stat.name}</p>
-                                <div className="flex items-baseline gap-2">
-                                    <h2 className="text-4xl font-black tracking-tighter text-white">{stat.value}</h2>
-                                    <div className={`w-2 h-2 rounded-full ${stat.color.replace('text', 'bg')} animate-pulse`}></div>
+                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mb-3">{stat.name}</p>
+                                <div className="flex items-baseline gap-3">
+                                    <h2 className="text-5xl font-black tracking-tighter text-slate-900 group-hover:text-orange-600 transition-colors">{stat.value}</h2>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div>
                                 </div>
                             </div>
-                            <svg className={`absolute -right-4 -bottom-4 w-24 h-24 ${stat.color} opacity-5 group-hover:opacity-10 transition-opacity`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d={stat.icon} />
-                            </svg>
+                            <div className="absolute -right-4 -bottom-4 w-28 h-28 bg-orange-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-700 flex items-center justify-center p-6">
+                                <svg className="w-full h-full text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={stat.icon} />
+                                </svg>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -63,102 +65,110 @@ export default async function StudentDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Events Feed */}
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-                            <h2 className="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Live Transmission Feed</h2>
-                            <Link href="/dashboard/student/events" className="text-[10px] font-black text-white uppercase tracking-widest hover:text-purple-400 transition-colors">See History &rarr;</Link>
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-5">
+                            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">Live Feed</h2>
+                            <Link href="/dashboard/student/events" className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4 transition-all">Full Broadcast &rarr;</Link>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-8">
                             {upcomingEvents?.length > 0 ? upcomingEvents.map((event) => (
-                                <div key={event.id} className="bg-zinc-900/50 border border-zinc-800/50 p-6 rounded-3xl group hover:border-zinc-700 hover:bg-zinc-900 transition-all">
-                                    <div className="flex items-center gap-4 mb-6">
-                                        <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden">
+                                <div key={event.id} className="bg-white border border-slate-100 p-8 rounded-[2.5rem] group hover:border-orange-200 transition-all duration-500 shadow-xl shadow-slate-200/40 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/[0.02] rounded-full -mr-16 -mt-16 group-hover:bg-orange-500/[0.05] transition-all duration-700"></div>
+
+                                    <div className="flex items-center gap-5 mb-8 relative z-10">
+                                        <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shadow-inner group-hover:border-orange-200 transition-colors">
                                             {event.clubs?.logo_url ? (
                                                 <img src={event.clubs.logo_url} className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="text-xs font-black">{event.clubs?.name?.[0]}</span>
+                                                <span className="text-sm font-black text-slate-400 group-hover:text-orange-500 transition-colors">{event.clubs?.name?.[0]}</span>
                                             )}
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm">{event.clubs?.name}</h4>
-                                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                                                {new Date(event.event_date).toLocaleDateString()}
+                                            <h4 className="font-bold text-slate-900 text-base tracking-tight">{event.clubs?.name}</h4>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                                {new Date(event.event_date).toLocaleDateString()} &bull; Verified
                                             </p>
                                         </div>
-                                        <div className="ml-auto px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-[9px] font-black text-purple-400 uppercase tracking-widest">
-                                            Broadcast
+                                        <div className="ml-auto px-4 py-1.5 bg-orange-50 border border-orange-100 rounded-full text-[9px] font-black text-orange-600 uppercase tracking-widest shadow-sm">
+                                            Live
                                         </div>
                                     </div>
 
-                                    <h3 className="text-2xl font-black text-white mb-4 tracking-tighter group-hover:text-purple-400 transition-colors">{event.title}</h3>
-                                    <p className="text-zinc-400 text-sm font-medium leading-relaxed line-clamp-2 mb-6">{event.description}</p>
+                                    <h3 className="text-3xl font-black text-slate-900 mb-5 tracking-tighter group-hover:text-orange-600 transition-colors leading-[1.1] relative z-10">{event.title}</h3>
+                                    <p className="text-slate-500 text-base font-medium leading-relaxed line-clamp-2 mb-8 relative z-10">{event.description}</p>
 
-                                    <div className="flex items-center justify-between pt-6 border-t border-zinc-800/50">
-                                        <div className="flex items-center gap-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                                            <span className="flex items-center gap-1.5 text-blue-400">
-                                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <div className="flex items-center justify-between pt-8 border-t border-slate-50 relative z-10">
+                                        <div className="flex items-center gap-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                                            <span className="flex items-center gap-2 text-orange-500 bg-orange-50 px-4 py-2 rounded-xl border border-orange-100">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                 </svg>
                                                 {event.location}
                                             </span>
                                         </div>
-                                        <Link href={`/dashboard/events/${event.id}`} className="w-10 h-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all group-hover:scale-105">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        <Link href={`/dashboard/events/${event.id}`} className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white hover:bg-orange-600 shadow-lg shadow-slate-200 hover:shadow-orange-500/30 transition-all group/link">
+                                            <svg className="w-5 h-5 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>
                                         </Link>
                                     </div>
                                 </div>
                             )) : (
-                                <div className="p-12 border-2 border-dashed border-zinc-900 rounded-3xl text-center">
-                                    <p className="text-zinc-600 font-bold text-[10px] uppercase tracking-widest">No signals detected</p>
+                                <div className="p-20 border-2 border-dashed border-slate-100 rounded-[3rem] text-center bg-white/50">
+                                    <p className="text-slate-300 font-black text-[11px] uppercase tracking-[0.4em]">Subspace Silence Detected</p>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Communities Sidebar */}
-                    <div className="space-y-8">
-                        <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-                            <h2 className="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Active Nodes</h2>
+                    <div className="space-y-10">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-5">
+                            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">Favorite Nodes</h2>
                         </div>
 
-                        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl">
-                            <div className="space-y-6">
+                        <div className="bg-white border border-slate-50 p-10 rounded-[3rem] shadow-xl shadow-slate-100 relative overflow-hidden">
+                            <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl"></div>
+
+                            <div className="space-y-8 relative z-10">
                                 {myClubs.length > 0 ? myClubs.map((club) => (
-                                    <Link key={club.id} href={`/dashboard/clubs/${club.id}`} className="flex items-center gap-4 group">
-                                        <div className="w-12 h-12 rounded-2xl bg-zinc-800 border border-zinc-700 overflow-hidden flex items-center justify-center group-hover:border-white transition-all">
+                                    <Link key={club.id} href={`/dashboard/clubs/${club.id}`} className="flex items-center gap-5 group">
+                                        <div className="w-14 h-14 rounded-[1.25rem] bg-slate-50 border border-slate-100 overflow-hidden flex items-center justify-center group-hover:border-orange-200 group-hover:shadow-lg transition-all duration-300 shadow-inner">
                                             {club.logo_url ? (
                                                 <img src={club.logo_url} alt={club.name} className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="font-black text-white text-lg">{club.name[0]}</span>
+                                                <span className="font-black text-slate-300 text-xl group-hover:text-orange-500 transition-colors">{club.name[0]}</span>
                                             )}
                                         </div>
                                         <div className="flex-grow">
-                                            <h4 className="font-black text-white text-sm group-hover:text-purple-400 transition-colors tracking-tight">{club.name}</h4>
-                                            <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Node Verified</p>
+                                            <h4 className="font-black text-slate-900 text-base group-hover:text-orange-600 transition-colors tracking-tight">{club.name}</h4>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-1.5">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                                Node Verified
+                                            </p>
                                         </div>
                                     </Link>
                                 )) : (
-                                    <p className="text-[10px] font-black text-zinc-700 uppercase tracking-widest text-center py-4">No nodes connected</p>
+                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest text-center py-6">0 Clusters Connected</p>
                                 )}
                             </div>
 
-                            <Link href="/dashboard/clubs" className="block w-full text-center mt-10 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-all font-mono">
+                            <Link href="/dashboard/clubs" className="block w-full text-center mt-12 py-5 bg-slate-900 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-orange-600 hover:shadow-2xl hover:shadow-orange-500/20 transition-all active:scale-[0.98]">
                                 EXPLORE ALL NODES
                             </Link>
                         </div>
 
                         {/* Special Actions */}
-                        <div className="bg-gradient-to-br from-purple-900/40 to-black border border-purple-500/20 rounded-3xl p-8 relative overflow-hidden group">
-                            <div className="relative z-10">
-                                <h4 className="text-lg font-black mb-2 tracking-tighter">Elevate Auth Privileges</h4>
-                                <p className="text-zinc-500 text-xs font-medium leading-relaxed mb-6 italic">Apply for Club Lead status to initiate your own transmissions and manage campus nodes.</p>
-                                <Link href="/dashboard/about" className="inline-block px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
-                                    Initiate Request
+                        <div className="bg-gradient-to-br from-orange-600 to-orange-400 rounded-[3rem] p-10 relative overflow-hidden group shadow-2xl shadow-orange-500/20">
+                            <div className="relative z-10 text-white">
+                                <h4 className="text-2xl font-black mb-3 tracking-tighter">Elevate Rights</h4>
+                                <p className="text-orange-50/80 text-xs font-bold leading-relaxed mb-8 opacity-90">Apply for Club Lead status to initiate your own transmissions and manage campus clusters.</p>
+                                <Link href="/dashboard/about" className="inline-block px-10 py-4 bg-white text-orange-600 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-orange-900/10">
+                                    Initiate Sync
                                 </Link>
                             </div>
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl -mr-16 -mt-16 group-hover:bg-purple-500/20 transition-all"></div>
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 blur-3xl -mr-24 -mt-24 group-hover:bg-white/20 transition-all duration-700"></div>
+                            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
                         </div>
                     </div>
                 </div>

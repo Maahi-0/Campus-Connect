@@ -3,7 +3,7 @@ import Sidebar from './Sidebar'
 
 export default function DashboardClientLayout({ user, profile, children }) {
     return (
-        <div className="min-h-screen bg-black font-sans selection:bg-purple-500/30 selection:text-white relative">
+        <div className="min-h-screen bg-[#f8fafc] font-sans selection:bg-orange-500/20 selection:text-slate-900 relative">
             {/* Navigation (Sidebar Desktop / Bottom Nav Mobile) */}
             <Sidebar
                 user={user}
@@ -11,10 +11,10 @@ export default function DashboardClientLayout({ user, profile, children }) {
             />
 
             {/* Main Content */}
-            <main className="min-h-screen w-full lg:pl-72 pb-24 lg:pb-0 transition-all duration-300 bg-black">
-                {/* Visual Backdrop Details */}
-                <div className="fixed top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-900/10 via-transparent to-transparent blur-3xl rounded-full pointer-events-none -mr-48 -mt-48 z-0"></div>
-                <div className="fixed bottom-0 left-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent blur-3xl rounded-full pointer-events-none -ml-48 -mb-48 z-0"></div>
+            <main className="min-h-screen w-full lg:pl-72 pb-24 lg:pb-0 transition-all duration-300">
+                {/* Visual Backdrop Details - Orange themed for light mode */}
+                <div className="fixed top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-400/5 via-transparent to-transparent blur-3xl rounded-full pointer-events-none -mr-48 -mt-48 z-0"></div>
+                <div className="fixed bottom-0 left-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-200/20 via-transparent to-transparent blur-3xl rounded-full pointer-events-none -ml-48 -mb-48 z-0"></div>
 
                 {/* Content Area */}
                 <div className="relative z-10 flex flex-col min-h-screen">

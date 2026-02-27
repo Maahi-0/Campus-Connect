@@ -1,16 +1,16 @@
-import { Outfit, Space_Grotesk } from 'next/font/google'
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import "./globals.css";
 
-const outfit = Outfit({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-outfit',
+  variable: '--font-plus-jakarta',
 })
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-space',
+  variable: '--font-inter',
 })
 
 export const metadata = {
@@ -20,13 +20,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${spaceGrotesk.variable}`}>
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-black text-white">
+    <html lang="en" className={`${plusJakartaSans.variable} ${inter.variable}`}>
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
         <main className="flex-grow">
           {children}
         </main>
-        <footer className="border-t border-white/5 py-8 mt-20">
-          <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+        <footer className="border-t border-black/5 py-8 mt-20">
+          <div className="max-w-7xl mx-auto px-6 text-center text-gray-400 text-sm">
             &copy; {new Date().getFullYear()} Campus Connect. All rights reserved.
           </div>
         </footer>

@@ -1,6 +1,10 @@
 import { createBrowserClient } from '@supabase/ssr'
 
+let supabaseClient;
+
 export function createSupabaseClient() {
+    if (supabaseClient) return supabaseClient;
+
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -9,5 +13,6 @@ export function createSupabaseClient() {
         return null
     }
 
-    return createBrowserClient(url, key)
+    supabaseClient = createBrowserClient(url, key)
+    return supabaseClient;
 }

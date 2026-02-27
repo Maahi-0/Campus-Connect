@@ -3,7 +3,36 @@ import Header from '@/components/dashboard/Header'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
-export const dynamic = 'force-dynamic'
+import { unstable_cache } from 'next/cache'
+
+export const revalidate = 60 // Revalidate every 60 seconds
+
+const getCachedMembers = unstable_cache(
+    async () => {
+        const supabase = await createSupabaseServer()
+        if (!supabase) return []
+
+        const { data, error } = await supabase
+            .from('profiles')
+            .select(`
+                *,
+                club_members (
+                    club_id,
+                    role,
+                    joined_at,
+                    clubs (
+                        name
+                    )
+                )
+            `)
+            .order('full_name', { ascending: true })
+
+        if (error) throw error
+        return data || []
+    },
+    ['members-list'],
+    { revalidate: 60, tags: ['members'] }
+)
 
 export default async function MembersPage() {
     const supabase = await createSupabaseServer()
@@ -11,114 +40,92 @@ export default async function MembersPage() {
 
     if (!user) redirect('/auth/login')
 
-    // Fetch user profile to check role
-    const { data: currentUserProfile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-    const rawRole = currentUserProfile?.role || 'student'
-    const userRole = rawRole.toLowerCase().trim()
+    const { profile: currentUserProfile } = await getUserProfile()
+    const userRole = (currentUserProfile?.role || 'student').toLowerCase().trim()
     const isAdmin = userRole === 'admin'
-    const isLead = userRole === 'club_lead' || userRole === 'lead'
 
-    // Fetch all members with their club memberships
-    const { data: members, error: profilesError } = await supabase
-        .from('profiles')
-        .select(`
-            *,
-            club_members (
-                club_id,
-                role,
-                joined_at,
-                clubs (
-                    name
-                )
-            )
-        `)
-        .order('full_name', { ascending: true })
-
-    if (profilesError) {
-        console.error('Error fetching profiles:', profilesError)
-    }
+    const members = await getCachedMembers()
 
     return (
-        <div className="pb-12 text-white">
+        <div className="pb-12 text-slate-900">
             <Header
                 title="Campus Directory"
                 subtitle={isAdmin ? "CORE MEMBER REGISTRY & ACCESS CONTROL" : "BROWSE ALL REGISTERED NODES"}
                 user={user}
             />
 
-            <div className="px-4 md:px-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="px-6 md:px-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     {members && members.length > 0 ? members.map(member => (
-                        <div key={member.id} className="bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden group hover:border-zinc-700 transition-all">
+                        <div key={member.id} className="bg-white border border-slate-100 rounded-[3.5rem] p-10 relative overflow-hidden group hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-500">
                             {/* Accent Glow */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 blur-3xl -mr-16 -mt-16 group-hover:bg-purple-500/10 transition-all"></div>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-3xl -mr-16 -mt-16 group-hover:bg-orange-500/10 transition-all"></div>
 
                             {/* Profile Photo & Identity */}
-                            <div className="flex items-center gap-6 mb-10 relative z-10">
-                                <div className="w-20 h-20 rounded-3xl overflow-hidden bg-zinc-800 border border-zinc-700 p-1 group-hover:border-white transition-all shrink-0">
-                                    <div className="w-full h-full rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center">
+                            <div className="flex items-center gap-6 mb-12 relative z-10">
+                                <div className="w-24 h-24 rounded-[2rem] overflow-hidden bg-slate-50 border border-slate-100 p-1.5 group-hover:border-orange-200 transition-all shrink-0 shadow-inner">
+                                    <div className="w-full h-full rounded-[1.5rem] overflow-hidden bg-white flex items-center justify-center relative">
                                         {member.avatar_url ? (
-                                            <img src={member.avatar_url} alt={member.full_name} className="w-full h-full object-cover" />
+                                            <img src={member.avatar_url} alt={member.full_name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-3xl font-black text-white/20">
+                                            <div className="w-full h-full flex items-center justify-center text-3xl font-black text-slate-200">
                                                 {member.full_name?.[0]?.toUpperCase()}
                                             </div>
                                         )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                 </div>
                                 <div className="min-w-0">
-                                    <h3 className="text-xl font-black text-white tracking-tighter mb-1 uppercase truncate group-hover:text-purple-400 transition-colors">
+                                    <h3 className="text-2xl font-black text-slate-900 tracking-tighter mb-2 uppercase truncate group-hover:text-orange-600 transition-colors">
                                         {member.full_name}
                                     </h3>
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-1.5 h-1.5 rounded-full ${member.role === 'admin' ? 'bg-red-500' : member.role === 'club_lead' ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
-                                        <p className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.2em]">{member.role?.replace('_', ' ')} NODE</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-2 h-2 rounded-full shadow-sm ${member.role === 'admin' ? 'bg-red-500' : member.role === 'club_lead' ? 'bg-orange-500' : 'bg-green-500'}`}></div>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{member.role?.replace('_', ' ')} NODE</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Technical Specs (Bio/Info) */}
-                            <div className="space-y-6 mb-10 relative z-10">
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-4 group/item">
-                                        <div className="w-8 h-8 rounded-xl bg-zinc-800/50 flex items-center justify-center text-zinc-600 group-hover/item:text-white transition-colors">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                            <div className="space-y-8 mb-12 relative z-10">
+                                <div className="grid grid-cols-1 gap-5">
+                                    <div className="flex items-center gap-5 group/item bg-slate-50/50 p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-all">
+                                        <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover/item:text-orange-500 transition-colors border border-slate-50">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                                         </div>
-                                        <span className="text-[11px] font-bold text-zinc-400 group-hover/item:text-zinc-200 transition-colors truncate">{member.institute_name || 'ORPHAN_NODE'}</span>
+                                        <span className="text-xs font-black text-slate-500 group-hover/item:text-slate-900 transition-colors truncate uppercase tracking-tight">{member.institute_name || 'UNIV_SYNC_NULL'}</span>
                                     </div>
 
                                     {member.degree && (
-                                        <div className="flex items-center gap-4 group/item">
-                                            <div className="w-8 h-8 rounded-xl bg-zinc-800/50 flex items-center justify-center text-zinc-600 group-hover/item:text-white transition-colors">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
+                                        <div className="flex items-center gap-5 group/item bg-slate-50 p-4 rounded-2xl border border-transparent hover:border-orange-100 hover:bg-orange-50/50 transition-all">
+                                            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover/item:text-orange-500 transition-colors border border-slate-50">
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
                                             </div>
-                                            <span className="text-[11px] font-bold text-zinc-400 group-hover/item:text-zinc-200 transition-colors">{member.education_level} : {member.degree}</span>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{member.education_level}</span>
+                                                <span className="text-xs font-black text-slate-900 group-hover/item:text-orange-600 transition-colors truncate">{member.degree}</span>
+                                            </div>
                                         </div>
                                     )}
 
-                                    <div className="flex items-center gap-4 group/item">
-                                        <div className="w-8 h-8 rounded-xl bg-zinc-800/50 flex items-center justify-center text-zinc-600 group-hover/item:text-white transition-colors">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                    <div className="flex items-center gap-5 group/item">
+                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover/item:text-orange-500 transition-colors">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                                         </div>
-                                        <span className="text-[11px] font-bold text-zinc-400 group-hover/item:text-zinc-200 transition-colors uppercase tracking-widest">{member.academic_year || 'SYNC_YEAR_UNKNOWN'}</span>
+                                        <span className="text-[10px] font-black text-slate-400 group-hover/item:text-slate-900 transition-colors uppercase tracking-[0.3em]">{member.academic_year || 'SYNC_YEAR_PENDING'}</span>
                                     </div>
                                 </div>
 
                                 {/* Club Affiliations */}
                                 {member.club_members && member.club_members.length > 0 && (
-                                    <div className="pt-6 border-t border-zinc-800">
-                                        <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-4 italic">Operational Affiliations</p>
-                                        <div className="flex flex-wrap gap-2">
+                                    <div className="pt-10 border-t border-slate-50">
+                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mb-6">Operational Affiliations</p>
+                                        <div className="flex flex-wrap gap-3">
                                             {member.club_members.map((membership, idx) => (
-                                                <div key={idx} className="px-3 py-1.5 bg-zinc-800 rounded-lg flex items-center gap-2 border border-zinc-800 hover:border-zinc-700 transition-all">
-                                                    <span className="text-[9px] font-bold text-zinc-300 truncate max-w-[100px]">{membership.clubs?.name}</span>
-                                                    <span className="w-1 h-1 rounded-full bg-blue-500 shrink-0"></span>
-                                                    <span className="text-[8px] font-black text-blue-400 uppercase tracking-tighter shrink-0">{membership.role}</span>
+                                                <div key={idx} className="px-4 py-2 bg-slate-50 rounded-xl flex items-center gap-3 border border-transparent hover:border-orange-100 hover:bg-orange-50 transition-all group/chip">
+                                                    <span className="text-[10px] font-black text-slate-600 group-hover/chip:text-orange-600 truncate max-w-[120px] uppercase tracking-tight">{membership.clubs?.name}</span>
+                                                    <span className="w-1 h-1 rounded-full bg-slate-300 group-hover/chip:bg-orange-400"></span>
+                                                    <span className="text-[9px] font-black text-slate-400 group-hover/chip:text-orange-500 uppercase tracking-tighter shrink-0">{membership.role}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -127,9 +134,9 @@ export default async function MembersPage() {
                             </div>
 
                             {/* Metadata / Footer */}
-                            <div className="pt-6 border-t border-zinc-800/50 flex items-center justify-between relative z-10">
-                                <span className="text-[8px] font-bold text-zinc-700 uppercase tracking-[0.2em]">
-                                    INITIALIZED: {new Date(member.created_at).toLocaleDateString()}
+                            <div className="pt-10 border-t border-slate-50 flex items-center justify-between relative z-10">
+                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">
+                                    UPTIME INIT: {new Date(member.created_at).toLocaleDateString()}
                                 </span>
 
                                 {isAdmin && member.id !== user.id && (
@@ -140,7 +147,7 @@ export default async function MembersPage() {
                                         await s.auth.admin.deleteUser(member.id)
                                         revalidatePath('/dashboard/members')
                                     }}>
-                                        <button className="px-5 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border border-red-500/20">
+                                        <button className="px-8 py-3 bg-white hover:bg-red-500 text-red-500 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all border border-red-100 hover:border-red-600 shadow-sm active:scale-95">
                                             Purge
                                         </button>
                                     </form>
@@ -148,14 +155,14 @@ export default async function MembersPage() {
                             </div>
                         </div>
                     )) : (
-                        <div className="col-span-full bg-zinc-900 border border-zinc-800 rounded-[3rem] p-32 text-center relative overflow-hidden">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-purple-500/5 blur-3xl"></div>
-                            <div className="relative z-10 space-y-6">
-                                <div className="w-20 h-20 bg-zinc-800 border border-zinc-700 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-pulse text-zinc-500">
-                                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <div className="col-span-full bg-white border border-slate-100 rounded-[4rem] p-32 text-center relative overflow-hidden shadow-2xl shadow-slate-100">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 bg-orange-500/5 blur-[100px] rounded-full"></div>
+                            <div className="relative z-10 space-y-8">
+                                <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner text-slate-200">
+                                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                                 </div>
-                                <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic">Registry Null</h3>
-                                <p className="text-zinc-500 font-bold uppercase tracking-[0.3em] text-[10px]">No active campus frequencies detected.</p>
+                                <h3 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Registry Null</h3>
+                                <p className="text-slate-400 font-bold uppercase tracking-[0.4em] text-[11px] max-w-sm mx-auto leading-relaxed">No active campus frequencies detected within the current coordinate set.</p>
                             </div>
                         </div>
                     )}

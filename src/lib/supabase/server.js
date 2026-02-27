@@ -1,7 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 
-export async function createSupabaseServer() {
+export const createSupabaseServer = cache(async () => {
     const cookieStore = await cookies()
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -37,14 +38,14 @@ export async function createSupabaseServer() {
             },
         }
     )
-}
-
-
+})
 
 import { redirect } from 'next/navigation'
 
-export async function getUserProfile() {
+export const getUserProfile = cache(async () => {
     const supabase = await createSupabaseServer()
+    if (!supabase) return { user: null, profile: null }
+
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return { user: null, profile: null }
@@ -56,7 +57,7 @@ export async function getUserProfile() {
         .single()
 
     return { user, profile }
-}
+})
 
 export async function requireRole(allowedRoles) {
     const { user, profile } = await getUserProfile()

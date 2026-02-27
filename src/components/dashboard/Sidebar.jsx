@@ -45,75 +45,81 @@ export default function Sidebar({ user, profile }) {
     return (
         <>
             {/* Desktop Sidebar */}
-            <aside className="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 bg-black border-r border-zinc-800 p-6 z-[100]">
-                <div className="mb-12 px-2">
+            <aside className="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white border-r border-slate-100 p-8 z-[100] shadow-sm">
+                <div className="mb-8 px-2">
                     <Logo showText={true} />
                 </div>
 
-                <nav className="flex-grow space-y-2">
+                {/* Profile Section - Moved to Top */}
+                <div className="mb-10 px-2 flex flex-col gap-6">
+                    <Link href="/dashboard/profile" className="p-5 bg-slate-50/50 rounded-[2.5rem] border border-slate-50 flex items-center gap-4 hover:bg-white hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5 transition-all group overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-12 h-12 bg-orange-500/5 rounded-full -mr-6 -mt-6"></div>
+                        <div className="w-11 h-11 rounded-2xl bg-orange-100 overflow-hidden border border-orange-200/50 shrink-0 shadow-inner">
+                            {profile?.avatar_url ? (
+                                <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-sm font-black text-orange-600">
+                                    {profile?.full_name?.[0]?.toUpperCase() || 'U'}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-grow min-w-0">
+                            <p className="text-sm font-black text-slate-900 truncate group-hover:text-orange-600 transition-colors tracking-tight">{profile?.full_name || 'User'}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mt-1">{currentRole.replace('_', ' ')} NODE</p>
+                        </div>
+                    </Link>
+                </div>
+
+                <nav className="flex-grow space-y-3">
                     {items.map((item) => {
                         const isActive = pathname === item.path
                         return (
                             <Link
                                 key={item.name}
                                 href={item.path}
-                                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? 'bg-zinc-900 text-white'
-                                    : 'text-zinc-500 hover:text-white hover:bg-zinc-900/50'
+                                className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 group ${isActive
+                                    ? 'bg-orange-50 text-orange-600 shadow-sm shadow-orange-100'
+                                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                                     }`}
                             >
-                                <svg
-                                    className={`w-6 h-6 transition-transform duration-200 ${isActive ? 'scale-110 text-white stroke-[2.5px]' : 'group-hover:scale-110'}`}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
-                                </svg>
-                                <span className={`text-base ${isActive ? 'font-black' : 'font-medium'}`}>{item.name}</span>
+                                <div className={`transition-transform duration-300 ${isActive ? 'scale-110 text-orange-600' : 'group-hover:scale-110 text-slate-400 group-hover:text-slate-600'}`}>
+                                    <svg
+                                        className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : ''}`}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                                    </svg>
+                                </div>
+                                <span className={`text-[15px] ${isActive ? 'font-black' : 'font-semibold'}`}>{item.name}</span>
                             </Link>
                         )
                     })}
                 </nav>
 
-                <div className="mt-auto space-y-4">
-                    <Link href="/dashboard/profile" className="p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800/50 flex items-center gap-3 hover:bg-zinc-900 hover:border-zinc-700 transition-all group">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 overflow-hidden border border-white/10 shrink-0">
-                            {profile?.avatar_url ? (
-                                <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-sm font-black text-white">
-                                    {profile?.full_name?.[0]?.toUpperCase() || 'U'}
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex-grow min-w-0">
-                            <p className="text-sm font-black text-white truncate group-hover:text-purple-400 transition-colors">{profile?.full_name || 'User'}</p>
-                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{currentRole.replace('_', ' ')}</p>
-                        </div>
-                    </Link>
-
+                <div className="mt-auto">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-4 px-4 py-3 text-zinc-500 hover:text-red-400 rounded-xl transition-all group"
+                        className="w-full flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-[1.5rem] transition-all group font-bold text-sm tracking-tight"
                     >
-                        <svg className="w-6 h-6 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span className="text-sm font-bold">Log Out</span>
+                        Log Out
                     </button>
                 </div>
             </aside>
 
             {/* Mobile Bottom Navbar */}
-            <nav className="lg:hidden fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-xl border-t border-zinc-800 px-6 py-4 flex justify-between items-center z-[100] safe-area-bottom">
+            <nav className="lg:hidden fixed bottom-6 left-6 right-6 bg-white/90 backdrop-blur-2xl border border-slate-200 px-8 py-5 flex justify-between items-center z-[100] rounded-[2.5rem] shadow-2xl shadow-slate-200">
                 {items.slice(0, 5).map((item) => {
                     const isActive = pathname === item.path
                     return (
                         <Link
                             key={item.name}
                             href={item.path}
-                            className={`flex flex-col items-center gap-1 transition-all ${isActive ? 'text-white' : 'text-zinc-500'}`}
+                            className={`flex flex-col items-center gap-1 transition-all ${isActive ? 'text-orange-600 scale-110' : 'text-slate-400'}`}
                         >
                             <svg
                                 className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : ''}`}
@@ -126,11 +132,11 @@ export default function Sidebar({ user, profile }) {
                         </Link>
                     )
                 })}
-                <Link href="/dashboard/profile" className="w-6 h-6 rounded-full overflow-hidden border border-zinc-700">
+                <Link href="/dashboard/profile" className={`w-8 h-8 rounded-xl overflow-hidden border-2 transition-all ${pathname === '/dashboard/profile' ? 'border-orange-500 scale-110' : 'border-slate-100'}`}>
                     {profile?.avatar_url ? (
                         <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-[8px] font-black">
+                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400">
                             {profile?.full_name?.[0]?.toUpperCase() || 'U'}
                         </div>
                     )}
